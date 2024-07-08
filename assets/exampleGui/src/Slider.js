@@ -5,7 +5,7 @@ class Slider extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: props.initialValue || 50
+      value: props.initialValue || 112,
     };
   }
 
@@ -20,19 +20,21 @@ class Slider extends Component {
     console.log('Slider value set:', this.state.value); // Debugging log
   }
 
+
+
   render() {
     console.log('Slider component is rendering'); // Debugging log
     const { value } = this.state;
     return (
       <Col sm={12} className={"sliderContainer"} style={{ padding: '10px', marginTop: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-           <span>PM2.5 &lt; 50.4 μg/m3</span>
-           <span>PM2.5 &gt; 50.4 μg/m3</span>
+           <span>0 μg/m3</span>
+           <span>225 μg/m3</span>
         </div>
         <input
           type="range"
           min="0"
-          max="100"
+          max="225" // 225 for experiment with Air Pollution
           value={value}
           onChange={this.handleChange}
           onMouseUp={this.handleMouseUp}
@@ -40,6 +42,11 @@ class Slider extends Component {
             width: '100%'
           }} // Ensure the slider takes the full width
         />
+        <div style={{ textAlign: 'center', marginTop: '10px' }}>
+          Current value: {value} μg/m3
+        </div>
+        <div style={{ height: '20px' }}>
+        </div>
       </Col>
     );
   }

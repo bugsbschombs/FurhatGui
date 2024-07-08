@@ -4,6 +4,7 @@ import furhatos.event.senses.SenseSkillGUIConnected
 import furhatos.flow.kotlin.*
 import furhatos.records.Record
 import furhatos.skills.HostedGUI
+import furhatos.gestures.Gestures
 
 // Sarah for log file info
 import java.io.File
@@ -16,39 +17,53 @@ import java.nio.file.Files
 val GUI = HostedGUI("ExampleGUI", "assets/exampleGui", PORT)
 val VARIABLE_SET = "VariableSet"
 val CLICK_BUTTON = "ClickButton"
-//Sarah add Slider
+//Sarah add Slider + InputSaved for textfields
 val SLIDER_CHANGE = "SliderChange"
+val INPUT_SAVED = "InputSaved"
 
-// Sarah test
-// Define the character names
-const val character1 = "Mask/Mask1"
-const val character2 = "Mask/Mask7"
-const val character3 = "Mask/Mask8"
-const val character4 = "Mask/Mask9"
-const val character5 = "Mask/Mask10"
-const val character6 = "Mask/Mask11"
-const val character7 = "Mask/Mask12"
-const val character8 = "Mask/Mask13"
-const val character9 = "Mask/Mask14"
-const val character10 = "Mask/Mask15"
-const val character11 = "Mask/Mask16"
-const val character12 = "Mask/Mask17"
-const val character13 = "Mask/Mask18"
-const val character14 = "Mask/Mask19"
-const val character15 = "Mask/Mask20"
-const val character16 = "Mask/Mask21"
-const val character17 = "Mask/Mask22"
-const val character18 = "Mask/Mask23"
-const val character19 = "Mask/Mask24"
-const val character20 = "Mask/Mask25"
-
+// Sarah Air Pollution
+// character for Air Pollution - Experiment
+const val character1 = "SicknessOptimal/SicknessOptimal1"
+const val character2 = "AirModerate/AirModerate1"
+const val character3 = "AirSensGroups/AirSensGroups2"
+const val character4 = "AirUnhealthy/AirUnhealthy2"
+const val character5 = "AirUnhealthy/AirUnhealthy3"
+const val character6 = "AirUnhealthy/AirUnhealthy4"
+const val character7 = "AirHazard/AirHazard2"
+const val character8 = "AirHazard/AirHazard3"
+const val character9 = "AirHazard/AirHazard4"
+const val character10 = "AirHazard/AirHazard5"
 
 // Sarah slider initial
-val initialSliderPosition = 50
+val initialSliderPosition = 112
 
 // Track the time and log data
 var startTime: LocalDateTime? = null
 val logData = mutableListOf<Pair<Int, String>>()
+
+
+// example character for virtual robot
+//const val character1 = "Alex"
+//const val character2 = "Brooklyn"
+//const val character3 = "Chen"
+//const val character4 = "Dorothy"
+//const val character5 = "Fedora"
+//const val character6 = "Fernando"
+//const val character7 = "Gyeong"
+//const val character8 = "Hayden"
+//const val character9 = "Isabel"
+//const val character10 = "James"
+//const val character11 = "Jamie"
+//const val character12 = "Jane"
+//const val character13 = "Kione"
+//const val character14 = "Lamin"
+//const val character15 = "Marty"
+//const val character16 = "Maurice"
+//const val character17 = "Nazar"
+//const val character18 = "Omar"
+//const val character19 = "Patricia"
+//const val character20 = "Rania"
+
 
 // Function to save log data to a file
 fun saveLogData() {
@@ -76,32 +91,53 @@ fun saveLogData() {
 // Function to map slider value to character
 fun getCharacterForSliderValue(value: Int): String {
     return when (value) {
-        in 0..4 -> character1
-        in 5..9 -> character2
-        in 10..14 -> character3
-        in 15..19 -> character4
-        in 20..24 -> character5
-        in 25..29 -> character6
-        in 30..34 -> character7
-        in 35..39 -> character8
-        in 40..44 -> character9
-        in 45..49 -> character10
-        in 50..54 -> character11
-        in 55..59 -> character12
-        in 60..64 -> character13
-        in 65..69 -> character14
-        in 70..74 -> character15
-        in 75..79 -> character16
-        in 80..84 -> character17
-        in 85..89 -> character18
-        in 90..94 -> character19
-        else -> character20 // For range 95-100
+        in 0..9 -> character1
+        in 10..35 -> character2
+        in 36..55 -> character3
+        in 56..78 -> character4
+        in 79..102 -> character5
+        in 103..125 -> character6
+        in 126..150 -> character7
+        in 151..175 -> character8
+        in 176..200 -> character9
+        else -> character10 // For range 201-255
     }
 }
+
+//Example for granualr slider real or virtual robot
+//fun getCharacterForSliderValue(value: Int): String {
+//    return when (value) {
+//        in 0..4 -> character1
+//        in 5..9 -> character2
+//        in 10..14 -> character3
+//        in 15..19 -> character4
+//        in 20..24 -> character5
+//        in 25..29 -> character6
+//        in 30..34 -> character7
+//        in 35..39 -> character8
+//        in 40..44 -> character9
+//        in 45..49 -> character10
+//        in 50..54 -> character11
+//        in 55..59 -> character12
+//        in 60..64 -> character13
+//        in 65..69 -> character14
+//        in 70..74 -> character15
+//        in 75..79 -> character16
+//        in 80..84 -> character17
+//        in 85..89 -> character18
+//        in 90..94 -> character19
+//        else -> character20 // For range 95-100
+//    }
+//}
 
 
 // Starting state, before our GUI has connected.
 val NoGUI: State = state(null) {
+    //default is Alex
+    onEntry {
+        furhat.character = "Alex"
+        furhat.attendAll()
+    }
     onEvent<SenseSkillGUIConnected> {
         goto(GUIConnected)
     }
@@ -116,6 +152,8 @@ val NoGUI: State = state(null) {
  */
 val GUIConnected = state(NoGUI) {
     onEntry {
+        //default character is ALex
+        furhat.character = "Alex"
         // Pass data to GUI
         send(DataDelivery(buttons = buttons, inputFields = inputFieldData.keys.toList(), sliderPosition = initialSliderPosition))
     }
@@ -128,19 +166,22 @@ val GUIConnected = state(NoGUI) {
         // Sarah test: Change the character's face when a button is clicked
         val buttonLabel = it.get("data") as String
         when (buttonLabel) {
-            "A button" -> {
-                furhat.character = character1
-                furhat.say("You switched face to $character1")
+            "Done" -> {
+                println("Done: Cholesterol") // Print "Done" to the terminal
             }
-            "Another button" -> {
-                furhat.character = character2
-                furhat.say("You switched face to $character2")
-                saveLogData()
-            }
-            "Test" -> {
-                furhat.character = character3
-                furhat.say("You switched face to $character3")
-            }
+//            "A button" -> {
+//                furhat.character = character1
+//                furhat.say("You switched face to $character1")
+//            }
+//            "Another button" -> {
+//                furhat.character = character2
+//                furhat.say("You switched face to $character2")
+//                saveLogData()
+//            }
+//            "Test" -> {
+//                furhat.character = character3
+//                furhat.say("You switched face to $character3")
+//            }
         }
 
         // Directly respond with the value we get from the event, with a fallback
@@ -149,14 +190,30 @@ val GUIConnected = state(NoGUI) {
         send(SPEECH_DONE)
     }
 
+//    onEvent("SliderTimeSpent") {
+//        val data = it.get("data") as? Record ?: run {
+//            println("No data found in event")
+//            return@onEvent
+//        }
+//
+//        val timeSpent = data["timeSpent"] as? Double ?: 0.0
+//        println("Time spent on the slider: $timeSpent seconds")
+//    }
 
-    //Slider mapping segment of 10 = character
+
+    //Slider mapping
     // Users changed the slider position
     onEvent(SLIDER_CHANGE) {
         //val sliderValue = (it.get("value") as String).toInt() // Ensure the value is interpreted as an integer
         val sliderValue = it.get("value") as Int
         val character = getCharacterForSliderValue(sliderValue)
         furhat.character = character
+        // Add facial expressions
+        when (sliderValue) {
+            in 0..9 -> furhat.gesture(Gestures.BigSmile(duration = 2.0))
+            in 55..125 -> furhat.gesture(Gestures.BrowFrown)
+            in 126..225 -> furhat.gesture(Gestures.ExpressSad)
+        }
         println("Slider value: $sliderValue, Mapped character: $character") // Log the character
         //furhat.say("You switched face to $character")
         send(SPEECH_DONE)
@@ -176,6 +233,19 @@ val GUIConnected = state(NoGUI) {
 //        send(SPEECH_DONE)
 //    }
 
+    onEvent(INPUT_SAVED) {
+        //println("Received event INPUT_SAVED: $it") // Debugging log
+
+        val data = it.get("data") as? Record ?: run {
+            println("No data found in event")
+            return@onEvent
+        }
+
+        val label = data["label"] as? String ?: "Unknown Label"
+        val inputValue = data["inputValue"] as? String ?: "No Input"
+
+        println("User input ($label): $inputValue") // Print the input value to the terminal
+    }
 
     // Sarah adds data field no answer, just log input text
     onEvent(VARIABLE_SET) {

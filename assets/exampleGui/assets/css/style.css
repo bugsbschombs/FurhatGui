@@ -60,3 +60,34 @@ h1, h2, h3, h4, h5 {
   padding: 0 !important;
   margin-bottom: 20px;
 }
+
+/* normal font for input field */
+.control-label {
+    font-weight: normal;
+}
+
+
+.input-wrapper {
+    margin-bottom: 20px; /* space after each input field */
+}
+
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* space around the button */
+}
+
+
+.button-wrapper .button {
+    width: 100%; /* Make the button take the full width of the column */
+    background-color: #ADD8E6; /* Set the button color to match the text box */
+    border: none; /* Remove the default border */
+    color: #000; /* Set the text color to black for better contrast */
+}
+
+.button-wrapper .button:hover {
+    background-color: #96c7d7; /* Optional: Slightly darker color for hover effect */
+}
+
+
+

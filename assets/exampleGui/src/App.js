@@ -13,7 +13,8 @@ class App extends Component {
           "speaking": false,
           "buttons": [],
           "inputFields": [],
-          sliderPosition: 50, // Sarah adds: Initial slider position in the middle
+          sliderPosition: 112, // Sarah adds: Initial slider position in the middle
+          sliderStartTime: null,
           logMessages: []
         }
         this.furhat = null
@@ -27,7 +28,7 @@ class App extends Component {
                 ...this.state,
                 buttons: data.buttons,
                 inputFields: data.inputFields,
-                sliderPosition: data.sliderPosition || 50 // Sarah adds anchor/slider position
+                sliderPosition: data.sliderPosition || 112 // Sarah adds anchor/slider position
             })
         })
 
@@ -50,6 +51,14 @@ class App extends Component {
     }
 
     clickButton = (button) => {
+        // to track time
+//        const endTime = new Date();
+//        if (button === "Done" && this.state.sliderStartTime) {
+//            const timeSpent = (endTime - this.state.sliderStartTime) / 1000; // Time in seconds
+//            console.log(`Time spent on the slider: ${timeSpent} seconds`);
+//        }
+        // to track time end
+
         this.setState({
             ...this.state,
             speaking: true
@@ -75,6 +84,20 @@ class App extends Component {
     }
     //Sarah adds Slider here:
     handleSlide = (value) => {
+//    //to track start time
+//        const endTime = new Date();
+//        if (button === "Done" && this.state.sliderStartTime) {
+//            const timeSpent = (endTime - this.state.sliderStartTime) / 1000; // Time in seconds
+//            console.log(`Time spent on the slider: ${timeSpent} seconds`);
+//
+//            this.furhat.send({
+//                event_name: "SliderTimeSpent",
+//                data: {
+//                    timeSpent: timeSpent
+//                }
+//            });
+//        }
+    // end track slider start time
          this.setState({
              ...this.state,
              sliderPosition: value,
@@ -87,13 +110,29 @@ class App extends Component {
     }
 
     // safe input from free text field
+//    handleSaveInput = (label, inputValue) => {
+//        const logMessage = `User input (${label}): ${inputValue}`;
+//        this.setState(prevState => ({
+//            logMessages: [...prevState.logMessages, logMessage]
+//        }))
+//        console.log(`User answer: ${inputValue}`);
+//        println(`User answer: ${inputValue}`);
+//    }
+
+    // Print input from free text field to terminal
     handleSaveInput = (label, inputValue) => {
-        const logMessage = `User input (${label}): ${inputValue}`;
-        this.setState(prevState => ({
-            logMessages: [...prevState.logMessages, logMessage]
-        }))
-        console.log(`User answer: ${inputValue}`);
-        println(`User answer: ${inputValue}`);
+        console.log(`Sending input data: label=${label}, inputValue=${inputValue}`); // Debugging log
+        this.setState({
+            ...this.state,
+            speaking: false // so you can click button after input field
+        });
+        this.furhat.send({
+            event_name: "InputSaved",
+            data: {
+                label: label,
+                inputValue: inputValue
+            }
+        });
     }
 
 
@@ -104,22 +143,45 @@ class App extends Component {
                 <Grid>
                     <Row>
                         <Col sm={12}>
-                            <h1>Air Pollution</h1>
+                            <h1></h1>
                         </Col>
                     </Row>
                     <Row>
                         <Col sm={6}>
                             <h2>Particulate Matter (PM)</h2>
-                            <p className="text-box">PM is a common proxy indicator for air pollution. It refers to inhalable particles, composed of sulphate, nitrates, ammonia, sodium chloride, black carbon, mineral dust or water. It is the most widely used indicator for assessing the health effects of exposure to air pollution. (see WHO)</p>
+                            <p className="text-box">Particulate matter (PM) is an important indicator for today's air pollution. PM refers to breathable particles composed of substances such as sulphate, nitrates, ammonia, black carbon or mineral dust, which can be absorbed through the respiratory system. PM is categorised by particle size, with PM2.5 representing fine particulate matter with a diameter of less than 2.5 µm. Factors such as combustion of fuels in power plants, industries or vehicles can increase the level of PM2.5.</p>
                         </Col>
                         <Col sm={6}>
-                            <h2>Air Pollution Explorer</h2>
+                            <h2>Data Explorer</h2>
+                            <p> Please take 2-3 minutes to explore the different levels of PM2.5, using the slider below. The data will be presented visually.</p>
                             <Slider onSlide={this.handleSlide} initialValue={this.state.sliderPosition} />
-                            <Input label="How would you describe the air pollution when PM.25 reaches a level of x?" onSave={this.handleSaveInput} />
+                            <div className="input-wrapper">
+                                <p> Please answer the following questions:</p>
+                                <div className="input-wrapper">
+                                    <Input label="Looking at the visualisation, please describe in your own words the amount of particulate matter represented by a slider value of 20 μg/m³? How do you interpret this level of PM2.5?" onSave={this.handleSaveInput} />
+                                    <div>
+                                        {this.state.logMessages.map((message, index) => (
+                                            <p key={index}>{message}</p>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="input-wrapper">
+                                <Input label="Comparing the visualisation at slider values of 20 μg/m³ and 80 μg/m³, what differences do you notice, and what do these differences tell you about the corresponding levels of PM2.5?" onSave={this.handleSaveInput} />
+                                <div>
+                                    {this.state.logMessages.map((message, index) => (
+                                        <p key={index}>{message}</p>
+                                    ))}
+                                </div>
+                            </div>
+                            <Input label="How would you feel when the PM2.5 levels extend 125 μg/m³ in your city?" onSave={this.handleSaveInput} />
                             <div>
                                 {this.state.logMessages.map((message, index) => (
                                     <p key={index}>{message}</p>
                                 ))}
+                            </div>
+                            <div className="button-wrapper">
+                                <Button label="Done" speaking={this.state.speaking} onClick={this.clickButton} />
                             </div>
                         </Col>
                     </Row>
