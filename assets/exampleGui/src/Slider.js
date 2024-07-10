@@ -5,7 +5,7 @@ class Slider extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: props.initialValue || 112,
+      value: props.initialValue || 0,
     };
   }
 

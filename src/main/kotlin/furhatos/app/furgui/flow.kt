@@ -35,7 +35,7 @@ const val character9 = "AirHazard/AirHazard4"
 const val character10 = "AirHazard/AirHazard5"
 
 // Sarah slider initial
-val initialSliderPosition = 112
+val initialSliderPosition = 0
 
 // track and print time
 var sliderStartTime: LocalDateTime? = null
@@ -45,6 +45,16 @@ var timeSpentOnGUI: Long = 0
 var startTime: LocalDateTime? = null
 val logData = mutableListOf<Pair<Int, String>>()
 
+// to log files:
+// Add this variable to specify the file name and path
+val logFileName = "P01_log.txt"
+val logFilePath = "/Users/sschombs/Project_Code/FaceVis/FurhatGui/log_files/$logFileName" // Change to your desired path
+
+// Create a function to log messages to the file
+fun logToFile(message: String) {
+    val file = File(logFilePath)
+    file.appendText("$message\n")
+}
 
 // example character for virtual robot
 //const val character1 = "Alex"
@@ -108,31 +118,6 @@ fun getCharacterForSliderValue(value: Int): String {
     }
 }
 
-//Example for granualr slider real or virtual robot
-//fun getCharacterForSliderValue(value: Int): String {
-//    return when (value) {
-//        in 0..4 -> character1
-//        in 5..9 -> character2
-//        in 10..14 -> character3
-//        in 15..19 -> character4
-//        in 20..24 -> character5
-//        in 25..29 -> character6
-//        in 30..34 -> character7
-//        in 35..39 -> character8
-//        in 40..44 -> character9
-//        in 45..49 -> character10
-//        in 50..54 -> character11
-//        in 55..59 -> character12
-//        in 60..64 -> character13
-//        in 65..69 -> character14
-//        in 70..74 -> character15
-//        in 75..79 -> character16
-//        in 80..84 -> character17
-//        in 85..89 -> character18
-//        in 90..94 -> character19
-//        else -> character20 // For range 95-100
-//    }
-//}
 
 
 // Starting state, before our GUI has connected.
@@ -171,12 +156,21 @@ val GUIConnected = state(NoGUI) {
         val buttonLabel = it.get("data") as String
         when (buttonLabel) {
             "Done" -> {
-                //track time until done clicked
                 sliderStartTime?.let {
                     timeSpentOnGUI = java.time.Duration.between(it, LocalDateTime.now()).seconds
-                    println("Time spent on GUI: $timeSpentOnGUI seconds")
+                    val timeMessage = "Time spent on GUI: $timeSpentOnGUI seconds"
+                    println(timeMessage)
+                    logToFile(timeMessage)
                 }
-                println("Done: Cholesterol") // Print "Done" to the terminal
+                val doneMessage = "Done: Particulate Matter"
+                println(doneMessage) // Print "Done" to the terminal
+                logToFile(doneMessage)
+//                //track time until done clicked
+//                sliderStartTime?.let {
+//                    timeSpentOnGUI = java.time.Duration.between(it, LocalDateTime.now()).seconds
+//                    println("Time spent on GUI: $timeSpentOnGUI seconds")
+//                }
+//                println("Done: Cholesterol") // Print "Done" to the terminal
             }
         }
 
@@ -210,11 +204,15 @@ val GUIConnected = state(NoGUI) {
             in 55..124 -> furhat.gesture(Gestures.BrowFrown)
             in 125..225 -> furhat.gesture(Gestures.ExpressSad)
         }
+        // for log in file
+        val logMessage = "Slider value: $sliderValue, Mapped character: $character"
+        println(logMessage) // Log the character
+        logToFile(logMessage)
         // Set slider start time if it is null
         if (sliderStartTime == null) {
             sliderStartTime = LocalDateTime.now()
         }
-        println("Slider value: $sliderValue, Mapped character: $character") // Log the character
+        //println("Slider value: $sliderValue, Mapped character: $character") // Log the character
         //furhat.say("You switched face to $character")
         send(SPEECH_DONE)
     }
@@ -243,8 +241,10 @@ val GUIConnected = state(NoGUI) {
 
         val label = data["label"] as? String ?: "Unknown Label"
         val inputValue = data["inputValue"] as? String ?: "No Input"
-
-        println("User input ($label): $inputValue") // Print the input value to the terminal
+        val logMessage = "User input ($label): $inputValue"
+        println(logMessage) // Print the input value to the terminal
+        logToFile(logMessage)
+        //println("User input ($label): $inputValue") // Print the input value to the terminal
     }
 
     // Sarah adds data field no answer, just log input text

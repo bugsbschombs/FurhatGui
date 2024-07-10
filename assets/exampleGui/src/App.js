@@ -13,7 +13,7 @@ class App extends Component {
           "speaking": false,
           "buttons": [],
           "inputFields": [],
-          sliderPosition: 112, // Sarah adds: Initial slider position in the middle
+          sliderPosition: 0, // Sarah adds: Initial slider position in the middle
           sliderStartTime: null,
           logMessages: []
         }
@@ -156,7 +156,7 @@ class App extends Component {
                             <div className="input-wrapper">
                                 <p> Please answer the following questions:</p>
                                 <div className="input-wrapper">
-                                    <Input label="Looking at the visualisation, please describe in your own words the amount of particulate matter represented by a slider value of 20 μg/m³? How do you interpret this level of PM2.5?" onSave={this.handleSaveInput} />
+                                    <Input label="Looking at the visualisation, how do you interpret the level of  20 μg/m³ particulate matter (PM2.5)? Please describe in your own words." onSave={this.handleSaveInput} />
                                     <div>
                                         {this.state.logMessages.map((message, index) => (
                                             <p key={index}>{message}</p>
@@ -165,7 +165,15 @@ class App extends Component {
                                 </div>
                             </div>
                             <div className="input-wrapper">
-                                <Input label="Comparing the visualisation at slider values of 20 μg/m³ and 80 μg/m³, what differences do you notice, and what do these differences tell you about the corresponding levels of PM2.5?" onSave={this.handleSaveInput} />
+                                <Input label="Looking at the visualisation, how do you interpret the level of  80 μg/m³ particulate matter (PM2.5)? Please describe in your own words." onSave={this.handleSaveInput} />
+                                <div>
+                                    {this.state.logMessages.map((message, index) => (
+                                        <p key={index}>{message}</p>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="input-wrapper">
+                                <Input label="What observations did you make as you moved the slider from left to right and how did you interpret them?" onSave={this.handleSaveInput} />
                                 <div>
                                     {this.state.logMessages.map((message, index) => (
                                         <p key={index}>{message}</p>
