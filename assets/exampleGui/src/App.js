@@ -51,14 +51,6 @@ class App extends Component {
     }
 
     clickButton = (button) => {
-        // to track time
-//        const endTime = new Date();
-//        if (button === "Done" && this.state.sliderStartTime) {
-//            const timeSpent = (endTime - this.state.sliderStartTime) / 1000; // Time in seconds
-//            console.log(`Time spent on the slider: ${timeSpent} seconds`);
-//        }
-        // to track time end
-
         this.setState({
             ...this.state,
             speaking: true
@@ -67,6 +59,12 @@ class App extends Component {
           event_name: "ClickButton",
           data: button
         })
+        // code to track time
+        this.setState({
+            ...this.state,
+            speaking: false
+        });
+        // end added code to track time
     }
 
     variableSet = (variable, value) => {
@@ -173,12 +171,6 @@ class App extends Component {
                                         <p key={index}>{message}</p>
                                     ))}
                                 </div>
-                            </div>
-                            <Input label="How would you feel when the PM2.5 levels extend 125 μg/m³ in your city?" onSave={this.handleSaveInput} />
-                            <div>
-                                {this.state.logMessages.map((message, index) => (
-                                    <p key={index}>{message}</p>
-                                ))}
                             </div>
                             <div className="button-wrapper">
                                 <Button label="Done" speaking={this.state.speaking} onClick={this.clickButton} />

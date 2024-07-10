@@ -37,6 +37,10 @@ const val character10 = "AirHazard/AirHazard5"
 // Sarah slider initial
 val initialSliderPosition = 112
 
+// track and print time
+var sliderStartTime: LocalDateTime? = null
+var timeSpentOnGUI: Long = 0
+
 // Track the time and log data
 var startTime: LocalDateTime? = null
 val logData = mutableListOf<Pair<Int, String>>()
@@ -91,16 +95,16 @@ fun saveLogData() {
 // Function to map slider value to character
 fun getCharacterForSliderValue(value: Int): String {
     return when (value) {
-        in 0..9 -> character1
-        in 10..35 -> character2
-        in 36..55 -> character3
-        in 56..78 -> character4
-        in 79..102 -> character5
-        in 103..125 -> character6
-        in 126..150 -> character7
-        in 151..175 -> character8
-        in 176..200 -> character9
-        else -> character10 // For range 201-255
+        in 0..8 -> character1
+        in 9..34 -> character2
+        in 35..54 -> character3
+        in 55..77 -> character4
+        in 78..101 -> character5
+        in 102..124 -> character6
+        in 125..149 -> character7
+        in 150..174 -> character8
+        in 175..199 -> character9
+        else -> character10 // For range 200 - 225
     }
 }
 
@@ -167,21 +171,13 @@ val GUIConnected = state(NoGUI) {
         val buttonLabel = it.get("data") as String
         when (buttonLabel) {
             "Done" -> {
+                //track time until done clicked
+                sliderStartTime?.let {
+                    timeSpentOnGUI = java.time.Duration.between(it, LocalDateTime.now()).seconds
+                    println("Time spent on GUI: $timeSpentOnGUI seconds")
+                }
                 println("Done: Cholesterol") // Print "Done" to the terminal
             }
-//            "A button" -> {
-//                furhat.character = character1
-//                furhat.say("You switched face to $character1")
-//            }
-//            "Another button" -> {
-//                furhat.character = character2
-//                furhat.say("You switched face to $character2")
-//                saveLogData()
-//            }
-//            "Test" -> {
-//                furhat.character = character3
-//                furhat.say("You switched face to $character3")
-//            }
         }
 
         // Directly respond with the value we get from the event, with a fallback
@@ -211,8 +207,12 @@ val GUIConnected = state(NoGUI) {
         // Add facial expressions
         when (sliderValue) {
             in 0..9 -> furhat.gesture(Gestures.BigSmile(duration = 2.0))
-            in 55..125 -> furhat.gesture(Gestures.BrowFrown)
-            in 126..225 -> furhat.gesture(Gestures.ExpressSad)
+            in 55..124 -> furhat.gesture(Gestures.BrowFrown)
+            in 125..225 -> furhat.gesture(Gestures.ExpressSad)
+        }
+        // Set slider start time if it is null
+        if (sliderStartTime == null) {
+            sliderStartTime = LocalDateTime.now()
         }
         println("Slider value: $sliderValue, Mapped character: $character") // Log the character
         //furhat.say("You switched face to $character")
