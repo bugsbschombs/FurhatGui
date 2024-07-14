@@ -2,9 +2,11 @@ package furhatos.app.furgui
 
 import furhatos.event.senses.SenseSkillGUIConnected
 import furhatos.flow.kotlin.*
+import furhatos.gestures.ARKitParams
 import furhatos.records.Record
 import furhatos.skills.HostedGUI
 import furhatos.gestures.Gestures
+import furhatos.gestures.defineGesture
 
 // Sarah for log file info
 import java.io.File
@@ -12,6 +14,9 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.nio.file.Paths
 import java.nio.file.Files
+
+//to define new gestures and adjust the mouth
+import furhatos.gestures.defineGesture
 
 // Our GUI declaration
 val GUI = HostedGUI("ExampleGUI", "assets/exampleGui", PORT)
@@ -78,6 +83,22 @@ fun logToFile(message: String) {
 //const val character19 = "Patricia"
 //const val character20 = "Rania"
 
+// define gesture so mouth tilts down
+val SadMouth = defineGesture("SadMouth") {
+    frame(0.5, persist = true) {
+        ARKitParams.MOUTH_FROWN_LEFT to 0.4
+        ARKitParams.MOUTH_FROWN_RIGHT to 0.4
+    }
+}
+
+val SadBrowFrown = defineGesture("SadBrowFrown") {
+    frame(0.5, 3.0, persist = true) {
+        ARKitParams.BROW_DOWN_LEFT to 0.5
+        ARKitParams.BROW_DOWN_RIGHT to 0.5
+//        ARKitParams.MOUTH_FROWN_LEFT to 0.5
+//        ARKitParams.MOUTH_FROWN_RIGHT to 0.5
+    }
+}
 
 // Function to save log data to a file
 fun saveLogData() {
@@ -201,7 +222,8 @@ val GUIConnected = state(NoGUI) {
         // Add facial expressions
         when (sliderValue) {
             in 0..9 -> furhat.gesture(Gestures.BigSmile(duration = 2.0))
-            in 55..124 -> furhat.gesture(Gestures.BrowFrown)
+            in 35..54 -> furhat.gesture(SadMouth)
+            in 55..124 -> furhat.gesture(SadBrowFrown) //furhat.gesture(Gestures.BrowFrown(duration = 2.0))
             in 125..225 -> furhat.gesture(Gestures.ExpressSad)
         }
         // for log in file
