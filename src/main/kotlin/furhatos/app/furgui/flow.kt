@@ -164,6 +164,7 @@ val GUIConnected = state(NoGUI) {
     onEntry {
         //default character is ALex
         furhat.character = "Alex"
+        furhat.attendAll()
         // Pass data to GUI
         send(DataDelivery(buttons = buttons, inputFields = inputFieldData.keys.toList(), sliderPosition = initialSliderPosition))
     }
